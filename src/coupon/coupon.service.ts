@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import fetch from "node-fetch";
 import * as FormData from "form-data";
-
+import * as crypto from "crypto";
 @Injectable()
 export class CouponService {
   async getCoupon(id) {
@@ -18,9 +18,9 @@ export class CouponService {
         method: "POST",
         body: form,
       });
-      console.log('RESULT GETCOUPON', result)
+      console.log("RESULT GETCOUPON", result);
       const response = await result.json();
-      
+
       return response[0];
     } catch (e) {
       console.log(e);
@@ -43,7 +43,7 @@ export class CouponService {
       method: "POST",
       body: form,
     });
-    
+
     const response = await result.json();
     return response[0];
   }
@@ -80,7 +80,7 @@ export class CouponService {
           if (status == 1) {
             if (currentDate <= expirationDate) {
               // this.redeemCoupon(coupon.id);
-              const userData = await this.getUserData(userId)
+              const userData = await this.getUserData(userId);
               return {
                 couponId: coupon.id,
                 isValid: true,
@@ -151,7 +151,20 @@ export class CouponService {
 
     const response = await result.json();
     console.log(response);
-    return response[0]
+    return response[0];
+  }
+  async getUserByEmail(email) {
+    const form = new FormData();
+    form.append("query", "SELECT * FROM cpnc_User WHERE email = " + email);
+    const result = await fetch("https://megusta.do/reports/queries", {
+      headers: form.getHeaders(),
+      method: "POST",
+      body: form,
+    });
+
+    const response = await result.json();
+    console.log(response);
+    return response[0];
   }
 
   async getCompanyEmail(dealId) {
@@ -170,6 +183,31 @@ export class CouponService {
     const response = await result.json();
     console.log(response);
     return response[0];
+  }
+  hashedPassword(password) {
+    const hashed = crypto.createHash("md5").update(password).digest("hex");
+    return hashed;
+  }
+  async login(email, password) {
+    const user = await this.getUserByEmail(email);
+    if (!user)
+      return {
+        error: true,
+        authentication: "false",
+        message: "No user with this email",
+      };
+    const hashedPassword = this.hashedPassword(password);
+
+    console.log(hashedPassword);
+    if (user.password == hashedPassword) {
+      return { error: false, authentication: true, user };
+    } else {
+      return {
+        error: true,
+        authentication: false,
+        message: "Incorrect Password",
+      };
+    }
   }
 
   async redeemConfirmation(id, companyId) {
