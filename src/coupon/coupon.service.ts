@@ -155,7 +155,7 @@ export class CouponService {
   }
   async getUserByEmail(email) {
     const form = new FormData();
-    form.append("query", "SELECT * FROM cpnc_User WHERE email = " + email);
+    form.append("query", `SELECT * FROM cpnc_User WHERE email = ${email}`);
     const result = await fetch("https://megusta.do/reports/queries", {
       headers: form.getHeaders(),
       method: "POST",
