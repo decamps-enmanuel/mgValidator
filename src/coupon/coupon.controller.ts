@@ -32,7 +32,7 @@ export class CouponController {
     return data;
   }
   @Post("test")
-  async passwordTest(@Body("body") body: { email: string; password: string }) {
+  async passwordTest(@Body() body: { email: string; password: string }) {
     const { email, password } = body;
     return await this.couponService.login(email, password);
   }
