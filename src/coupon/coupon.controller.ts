@@ -31,7 +31,7 @@ export class CouponController {
     const data = await this.couponService.redeemConfirmation(id, companyId);
     return data;
   }
-  @Post("test")
+  @Post("login/test")
   async passwordTest(@Body() body: { email: string; password: string }) {
     const { email, password } = body;
     return await this.couponService.login(email, password);
