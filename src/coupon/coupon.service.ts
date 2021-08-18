@@ -161,9 +161,9 @@ export class CouponService {
       method: "POST",
       body: form,
     });
-    console.log(await result.text());
-    const response = await result.json();
 
+    const response = await result.json();
+    console.log(response);
     return response[0];
   }
 
