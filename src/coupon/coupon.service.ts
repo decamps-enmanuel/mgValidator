@@ -185,7 +185,10 @@ export class CouponService {
     return response[0];
   }
   hashedPassword(password) {
-    const hashed = crypto.createHash("md5").update(password).digest("hex");
+    const hashed = crypto
+      .createHash("md5")
+      .update(password, "utf8")
+      .digest("hex");
     return hashed;
   }
   async login(email, password) {
