@@ -189,6 +189,9 @@ export class CouponService {
     return hashed;
   }
   async login(email, password) {
+    const hashedPassword = this.hashedPassword(password);
+
+    console.log(hashedPassword);
     const user = await this.getUserByEmail(email);
     if (!user)
       return {
@@ -196,9 +199,7 @@ export class CouponService {
         authentication: "false",
         message: "No user with this email",
       };
-    const hashedPassword = this.hashedPassword(password);
 
-    console.log(hashedPassword);
     if (user.password == hashedPassword) {
       return { error: false, authentication: true, user };
     } else {
